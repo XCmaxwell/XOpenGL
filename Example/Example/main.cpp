@@ -45,12 +45,14 @@ GLuint createShaderProgram() {
         "void main(void) \n"
         "{ color = vec4(0.0, 0.0, 1.0, 1.0); }";
     
-    //顶点
+    //创建 顶点着色器
     GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
-    //
+    //创建 片段着色器
     GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
+    //加载着色器资源
     glShaderSource(vShader, 1, &vshaderSource, NULL);
     glShaderSource(fShader, 1, &fshaderSource, NULL);
+    //编译着色器
     glCompileShader(vShader);
     glCompileShader(fShader);
     
@@ -100,6 +102,7 @@ int main(int argc, const char * argv[]) {
     GLFWwindow * window = glfwCreateWindow(600, 600, "Chapter 2 - program 1", NULL, NULL);
     //将window与 当前 OpenGL 上下文关联
     glfwMakeContextCurrent(window);
+    //选择绘制区域
     glViewport(0,0,600,600);
     glewExperimental = GL_TRUE;
     
@@ -122,7 +125,7 @@ int main(int argc, const char * argv[]) {
         glfwPollEvents();
     }
 
-    //销毁窗口、终止运行
+    //5.销毁窗口、终止运行
     glfwDestroyWindow(window);
     glfwTerminate();
     exit(EXIT_SUCCESS);

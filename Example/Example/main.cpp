@@ -25,6 +25,7 @@ using namespace std;
 /// - Parameter mode: 图元类型（三角形 GL_TRIANGLES ）
 /// - Parameter first: 从哪个顶点开始绘制
 /// - Parameter first: 总共要绘制的顶点数
+///   线框模型： glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 glDrawArrays(GLenum mode, Glint first, GLsizei count);
  */
 
@@ -42,9 +43,13 @@ GLuint createShaderProgram() {
     const char *fshaderSource =
         "#version 410    \n"
         "out vec4 color; \n"
-        "void main(void) \n"
-        "{ color = vec4(0.0, 0.0, 1.0, 1.0); }";
-    
+    "void main(void) \n"
+    "{  if (gl_FragCoord.x < 300) {\n "
+    "       color = vec4(1.0, 0.0, 1.0, 1.0);\n"
+    "   } else {\n"
+    "    color = vec4(0.0, 0.0, 1.0, 1.0);\n"
+    "   }\n"
+    "}";
     //创建 顶点着色器
     GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
     //创建 片段着色器
@@ -103,7 +108,7 @@ int main(int argc, const char * argv[]) {
     //将window与 当前 OpenGL 上下文关联
     glfwMakeContextCurrent(window);
     //选择绘制区域
-    glViewport(0,0,600,600);
+    glViewport(0,0,300,300);
     glewExperimental = GL_TRUE;
     
     //2.初始化glew库

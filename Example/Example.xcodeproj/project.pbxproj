@@ -27,6 +27,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		84286B922B2EF26A008AEC44 /* CHeckErrorHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CHeckErrorHeader.h; sourceTree = "<group>"; };
 		842DF0E32B00CD5E0072CD01 /* Example */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Example; sourceTree = BUILT_PRODUCTS_DIR; };
 		842DF0E62B00CD5E0072CD01 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		842DF0EE2B00D16C0072CD01 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -36,6 +37,8 @@
 		842DF0F62B00D2990072CD01 /* libsoil2-debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsoil2-debug.a"; path = "../lib/libsoil2-debug.a"; sourceTree = "<group>"; };
 		842DF0F82B00D4670072CD01 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		842DF0FB2B00D6FE0072CD01 /* libsoil2-debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsoil2-debug.a"; path = "lib/libsoil2-debug.a"; sourceTree = "<group>"; };
+		842EE7EB2B72327C00504D09 /* vertShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = vertShader.glsl; path = "../../配套文件/Programs/Chapter_02_opengl/Prog2_4_files/vertShader.glsl"; sourceTree = "<group>"; };
+		842EE7EC2B72327C00504D09 /* fragShader.glsl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = fragShader.glsl; path = "../../配套文件/Programs/Chapter_02_opengl/Prog2_4_files/fragShader.glsl"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +78,9 @@
 			children = (
 				842DF0F82B00D4670072CD01 /* Example.entitlements */,
 				842DF0E62B00CD5E0072CD01 /* main.cpp */,
+				84286B922B2EF26A008AEC44 /* CHeckErrorHeader.h */,
+				842EE7EC2B72327C00504D09 /* fragShader.glsl */,
+				842EE7EB2B72327C00504D09 /* vertShader.glsl */,
 			);
 			path = Example;
 			sourceTree = "<group>";

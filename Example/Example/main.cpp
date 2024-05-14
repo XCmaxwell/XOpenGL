@@ -13,6 +13,7 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include "CHeckErrorHeader.h"
 
 using namespace std;
 
@@ -60,7 +61,10 @@ GLuint createShaderProgram() {
     glShaderSource(fShader, 1, &fshaderSource, NULL);
     //编译着色器
     glCompileShader(vShader);
+    checkOpenGLError();
+    
     glCompileShader(fShader);
+    checkOpenGLError();
     
     //创建一个空的程序对象，并返回一个可以引用它的非零值。
     //1.将来用于链接着色器对象， 2.检查着色器兼容性
@@ -68,8 +72,10 @@ GLuint createShaderProgram() {
     //着色器链接到程序对象, 相当于绑定
     glAttachShader(vfProgram, vShader);
     glAttachShader(vfProgram, fShader);
+    
     //连接程序对象
     glLinkProgram(vfProgram);
+    checkOpenGLError();
     return vfProgram;
 }
 

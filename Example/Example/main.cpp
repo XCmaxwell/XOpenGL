@@ -16,6 +16,7 @@
 
 using namespace std;
 
+// C++应用程序--顶点着色器-- 各种着色器 --- 光栅化 --- 片段着色器 --- 像素操作
 // 3D模型--> 图元--> 顶点
 // 顶点着色器/片段着色器 --> 管线
 
@@ -30,8 +31,8 @@ glDrawArrays(GLenum mode, Glint first, GLsizei count);
  */
 
 #define numVAOs 1
-GLuint renderingProgram;
-GLuint vao[numVAOs];
+GLuint _renderingProgram;
+GLuint _vao[numVAOs];
 
 GLuint createShaderProgram() {
     
@@ -47,7 +48,7 @@ GLuint createShaderProgram() {
     "{  if (gl_FragCoord.x < 300) {\n "
     "       color = vec4(1.0, 0.0, 1.0, 1.0);\n"
     "   } else {\n"
-    "    color = vec4(0.0, 0.0, 1.0, 1.0);\n"
+    "    color = vec4(1.0, 1.0, .0, 1.0);\n"
     "   }\n"
     "}";
     //创建 顶点着色器
@@ -61,9 +62,13 @@ GLuint createShaderProgram() {
     glCompileShader(vShader);
     glCompileShader(fShader);
     
+    //创建一个空的程序对象，并返回一个可以引用它的非零值。
+    //1.将来用于链接着色器对象， 2.检查着色器兼容性
     GLuint vfProgram = glCreateProgram();
+    //着色器链接到程序对象, 相当于绑定
     glAttachShader(vfProgram, vShader);
     glAttachShader(vfProgram, fShader);
+    //连接程序对象
     glLinkProgram(vfProgram);
     return vfProgram;
 }
@@ -71,9 +76,11 @@ GLuint createShaderProgram() {
 void init(GLFWwindow* window) {
     
     // 储存指向它的整数 ID
-    renderingProgram = createShaderProgram();
-    glGenVertexArrays(numVAOs, vao);
-    glBindVertexArray(vao[0]);
+    _renderingProgram = createShaderProgram();
+    // 创建一个或多个顶点数组对象的标识符
+    glGenVertexArrays(numVAOs, _vao);
+    // 将创建的顶点数组对象绑定到当前OpenGL上下文
+    glBindVertexArray(_vao[0]);
 }
 
 void display(GLFWwindow* window, double currentTime) {
@@ -82,9 +89,12 @@ void display(GLFWwindow* window, double currentTime) {
     glClearColor(0.0, 0.0, 0.0, 1.0);
     //清除全部缓冲区---使用clear Color填充缓冲区
     glClear(GL_COLOR_BUFFER_BIT);
-    
-    glUseProgram(renderingProgram);
+    //绑定新的着色器程序
+    glUseProgram(_renderingProgram);
+    //glPointSize用于指定一个顶点对应渲染的像素点数，glPointSize来设置点的直径大小
     glPointSize(30.0f);
+    //从已经绑定的顶点数组对象（VAO）中提取顶点数据
+    //0.要渲染的图元类型:点、线、三角形， 1.开始渲染的第一个顶点的索引  2.渲染的顶点数量。
     glDrawArrays(GL_POINTS, 0, 1);
 }
 
@@ -97,25 +107,31 @@ int main(int argc, const char * argv[]) {
     //指定了计算机必须与 OpenGL版本4.1兼容
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    //Mac专有
+    //指定OPENGL的配置文件
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    //指定OPENGL是否向前兼容
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
     //初始化window
     //创建与其相关的OpenGL上下文、前2个参数指定宽高标题等
     //后2个参数 NULL， 分别用来允许全屏显示和资源共享
     GLFWwindow * window = glfwCreateWindow(600, 600, "Chapter 2 - program 1", NULL, NULL);
-    //将window与 当前 OpenGL 上下文关联
+    //将window 与 当前 OpenGL 上下文关联
     glfwMakeContextCurrent(window);
     //选择绘制区域
     glViewport(0,0,300,300);
+    //启用GLEW库的实验性功能
+    //有些显卡的驱动程序不能正确给出所支持的扩展信息，导致GLEW不能正确获取某些函数的入口地址
     glewExperimental = GL_TRUE;
     
     //2.初始化glew库
     if (glewInit() != GLEW_OK) {
         exit(EXIT_FAILURE);
     }
-    //开启垂直同步
+    /* 开启垂直同步 v-sync
+     * 垂直同步是一种图形渲染技术，它的目的是将图像的刷新与显示器的垂直刷新频率进行同步，以避免出现画面撕裂（tearing）现象。
+     * 画面撕裂是指在图像渲染过程中，显示器正在进行刷新，而此时渲染的图像只完成了一部分，导致画面出现不连贯的情况。
+     */
     glfwSwapInterval(1);
 
     //3.初始化函数

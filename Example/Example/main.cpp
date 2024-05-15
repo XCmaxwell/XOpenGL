@@ -6,6 +6,7 @@
 //
 
 #include <iostream>
+#include <fstream>
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdocumentation"
@@ -35,23 +36,35 @@ glDrawArrays(GLenum mode, Glint first, GLsizei count);
 GLuint _renderingProgram;
 GLuint _vao[numVAOs];
 
+string readShaderSource(const char *filePath) {
+    string content;
+    ifstream file_stream(filePath, ios::in);
+    if ( !file_stream.is_open() ) {
+        return "";
+    }
+    string line = "";
+    while (!file_stream.eof()) {
+        getline(file_stream, line);
+        content.append(line + "\n");
+    }
+    file_stream.close();
+    return content;
+}
+
 GLuint createShaderProgram() {
     
-    const char *vshaderSource =
-        "#version 410    \n"
-        "void main(void) \n"
-        "{ gl_Position = vec4(0.0, 0.0, 0.0, 1.0); }";
+    string vshaderString = readShaderSource("/Users/admin/Study/XOpenGL/Example/Example/vertShader.glsl");
+    if (vshaderString.length() == 0) {
+        return 0;
+    }
+    const char *vshaderSource = vshaderString.c_str();
+    
+    string fshaderString = readShaderSource("/Users/admin/Study/XOpenGL/Example/Example/fragShader.glsl");
+    if (fshaderString.length() == 0) {
+        return 0;
+    }
+    const char *fshaderSource = fshaderString.c_str();
 
-    const char *fshaderSource =
-        "#version 410    \n"
-        "out vec4 color; \n"
-    "void main(void) \n"
-    "{  if (gl_FragCoord.x < 300) {\n "
-    "       color = vec4(1.0, 0.0, 1.0, 1.0);\n"
-    "   } else {\n"
-    "    color = vec4(1.0, 1.0, .0, 1.0);\n"
-    "   }\n"
-    "}";
     //创建 顶点着色器
     GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
     //创建 片段着色器
@@ -121,7 +134,7 @@ int main(int argc, const char * argv[]) {
     //初始化window
     //创建与其相关的OpenGL上下文、前2个参数指定宽高标题等
     //后2个参数 NULL， 分别用来允许全屏显示和资源共享
-    GLFWwindow * window = glfwCreateWindow(600, 600, "Chapter 2 - program 1", NULL, NULL);
+    GLFWwindow * window = glfwCreateWindow(300, 300, "Chapter 2 - program 1", NULL, NULL);
     //将window 与 当前 OpenGL 上下文关联
     glfwMakeContextCurrent(window);
     //选择绘制区域

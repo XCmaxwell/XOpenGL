@@ -102,19 +102,32 @@ void init(GLFWwindow* window) {
     glBindVertexArray(_vao[0]);
 }
 
+static float x = 0.0f; // 三角形在 x 轴的位置
+static float moveX = 0.01f; // 移动三角形的偏移量
+
 void display(GLFWwindow* window, double currentTime) {
     
+    //清除深度缓冲，否则仍使用上一次渲染迭代中的写入的深度值
+    glClear(GL_DEPTH_BUFFER_BIT);
     //指定了清除背景时用的颜色值
     glClearColor(0.0, 0.0, 0.0, 1.0);
     //清除全部缓冲区---使用clear Color填充缓冲区
     glClear(GL_COLOR_BUFFER_BIT);
+    
+     // 切换至让三角形向右移动
+     x += moveX;
+     if (x > 1.0f) moveX = -0.01f; // 沿 x 轴移动三角形
+     if (x < -1.0f) moveX = 0.01f; // 切换至让三角形向左移动
+     GLuint offsetLocation = glGetUniformLocation(_renderingProgram, "offset"); // 获取指向 offset 变量的指针
+     glProgramUniform1f(_renderingProgram, offsetLocation, x);
+    
     //绑定新的着色器程序
     glUseProgram(_renderingProgram);
     //glPointSize用于指定一个顶点对应渲染的像素点数，glPointSize来设置点的直径大小
     glPointSize(30.0f);
     //从已经绑定的顶点数组对象（VAO）中提取顶点数据
     //0.要渲染的图元类型:点、线、三角形， 1.开始渲染的第一个顶点的索引  2.渲染的顶点数量。
-    glDrawArrays(GL_POINTS, 0, 1);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 }
 
 int main(int argc, const char * argv[]) {

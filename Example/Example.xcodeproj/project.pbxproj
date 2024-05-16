@@ -12,6 +12,8 @@
 		842DF0F12B00D1740072CD01 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 842DF0F02B00D1740072CD01 /* CoreFoundation.framework */; };
 		842DF0F32B00D21F0072CD01 /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 842DF0F22B00D21F0072CD01 /* libGLEW.2.2.0.dylib */; };
 		842DF0F52B00D25B0072CD01 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 842DF0F42B00D25B0072CD01 /* libglfw.3.3.dylib */; };
+		84506B982BF5E30800F04C5A /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84506B962BF5E30700F04C5A /* Utils.cpp */; };
+		84506B992BF5E6A600F04C5A /* libsoil2-debug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 842DF0FB2B00D6FE0072CD01 /* libsoil2-debug.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -39,6 +41,8 @@
 		842DF0F62B00D2990072CD01 /* libsoil2-debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsoil2-debug.a"; path = "../lib/libsoil2-debug.a"; sourceTree = "<group>"; };
 		842DF0F82B00D4670072CD01 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
 		842DF0FB2B00D6FE0072CD01 /* libsoil2-debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsoil2-debug.a"; path = "lib/libsoil2-debug.a"; sourceTree = "<group>"; };
+		84506B962BF5E30700F04C5A /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
+		84506B972BF5E30700F04C5A /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -50,6 +54,7 @@
 				842DF0F32B00D21F0072CD01 /* libGLEW.2.2.0.dylib in Frameworks */,
 				842DF0F12B00D1740072CD01 /* CoreFoundation.framework in Frameworks */,
 				842DF0EF2B00D16C0072CD01 /* OpenGL.framework in Frameworks */,
+				84506B992BF5E6A600F04C5A /* libsoil2-debug.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,6 +84,8 @@
 				842DF0F82B00D4670072CD01 /* Example.entitlements */,
 				842DF0E62B00CD5E0072CD01 /* main.cpp */,
 				84286B922B2EF26A008AEC44 /* CHeckErrorHeader.h */,
+				84506B972BF5E30700F04C5A /* Utils.h */,
+				84506B962BF5E30700F04C5A /* Utils.cpp */,
 				8424BB862BF446FB00916244 /* fragShader.glsl */,
 				8424BB872BF446FB00916244 /* vertShader.glsl */,
 			);
@@ -156,6 +163,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				842DF0E72B00CD5E0072CD01 /* main.cpp in Sources */,
+				84506B982BF5E30800F04C5A /* Utils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -282,7 +290,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.2.0_1/lib,
 					/usr/local/Cellar/glfw/3.3.8/lib,
-					"$(PROJECT_DIR)/lib/libsoil2-debug.a",
+					"$(PROJECT_DIR)/lib/",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -299,7 +307,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.2.0_1/lib,
 					/usr/local/Cellar/glfw/3.3.8/lib,
-					"$(PROJECT_DIR)/lib/libsoil2-debug.a",
+					"$(PROJECT_DIR)/lib/",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

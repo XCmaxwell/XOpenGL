@@ -42,7 +42,7 @@ static float moveX = 0.01f; // 移动三角形的偏移量
 void init(GLFWwindow* window) {
     
     // 储存指向它的整数 ID
-    _renderingProgram = Utils::createShaderProgram("/Users/admin/Study/XOpenGL/Example/Example/vertShader.glsl", "/Users/admin/Study/XOpenGL/Example/Example/fragShader.glsl");
+    _renderingProgram = Utils::createShaderProgram("/Users/admin/Study/XOpenGL/Example01/Example/vertShader.glsl", "/Users/admin/Study/XOpenGL/Example01/Example/fragShader.glsl");
     // 创建一个或多个顶点数组对象的标识符
     glGenVertexArrays(numVAOs, _vao);
     // 将创建的顶点数组对象绑定到当前OpenGL上下文

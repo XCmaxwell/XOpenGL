@@ -13,7 +13,7 @@
 		842DF0F32B00D21F0072CD01 /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 842DF0F22B00D21F0072CD01 /* libGLEW.2.2.0.dylib */; };
 		842DF0F52B00D25B0072CD01 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 842DF0F42B00D25B0072CD01 /* libglfw.3.3.dylib */; };
 		84506B982BF5E30800F04C5A /* Utils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 84506B962BF5E30700F04C5A /* Utils.cpp */; };
-		84506B992BF5E6A600F04C5A /* libsoil2-debug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 842DF0FB2B00D6FE0072CD01 /* libsoil2-debug.a */; };
+		848E4E342C298E160076915D /* libsoil2-debug.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 848E4E332C298E0B0076915D /* libsoil2-debug.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -38,11 +38,10 @@
 		842DF0F02B00D1740072CD01 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = System/Library/Frameworks/CoreFoundation.framework; sourceTree = SDKROOT; };
 		842DF0F22B00D21F0072CD01 /* libGLEW.2.2.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.2.2.0.dylib; path = ../../../../usr/local/Cellar/glew/2.2.0_1/lib/libGLEW.2.2.0.dylib; sourceTree = "<group>"; };
 		842DF0F42B00D25B0072CD01 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../usr/local/Cellar/glfw/3.3.8/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
-		842DF0F62B00D2990072CD01 /* libsoil2-debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsoil2-debug.a"; path = "../lib/libsoil2-debug.a"; sourceTree = "<group>"; };
 		842DF0F82B00D4670072CD01 /* Example.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Example.entitlements; sourceTree = "<group>"; };
-		842DF0FB2B00D6FE0072CD01 /* libsoil2-debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsoil2-debug.a"; path = "lib/libsoil2-debug.a"; sourceTree = "<group>"; };
 		84506B962BF5E30700F04C5A /* Utils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Utils.cpp; sourceTree = "<group>"; };
 		84506B972BF5E30700F04C5A /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		848E4E332C298E0B0076915D /* libsoil2-debug.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = "libsoil2-debug.a"; path = "../lib/libsoil2-debug.a"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +53,7 @@
 				842DF0F32B00D21F0072CD01 /* libGLEW.2.2.0.dylib in Frameworks */,
 				842DF0F12B00D1740072CD01 /* CoreFoundation.framework in Frameworks */,
 				842DF0EF2B00D16C0072CD01 /* OpenGL.framework in Frameworks */,
-				84506B992BF5E6A600F04C5A /* libsoil2-debug.a in Frameworks */,
+				848E4E342C298E160076915D /* libsoil2-debug.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -95,8 +94,7 @@
 		842DF0ED2B00D16C0072CD01 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				842DF0F62B00D2990072CD01 /* libsoil2-debug.a */,
-				842DF0FB2B00D6FE0072CD01 /* libsoil2-debug.a */,
+				848E4E332C298E0B0076915D /* libsoil2-debug.a */,
 				842DF0F42B00D25B0072CD01 /* libglfw.3.3.dylib */,
 				842DF0F22B00D21F0072CD01 /* libGLEW.2.2.0.dylib */,
 				842DF0F02B00D1740072CD01 /* CoreFoundation.framework */,
@@ -290,7 +288,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.2.0_1/lib,
 					/usr/local/Cellar/glfw/3.3.8/lib,
-					"$(PROJECT_DIR)/lib/",
+					"$(PROJECT_DIR)/../lib/",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -307,7 +305,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					/usr/local/Cellar/glew/2.2.0_1/lib,
 					/usr/local/Cellar/glfw/3.3.8/lib,
-					"$(PROJECT_DIR)/lib/",
+					"$(PROJECT_DIR)/../lib/",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

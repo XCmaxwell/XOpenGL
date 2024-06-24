@@ -55,25 +55,47 @@ void init(GLFWwindow* window) {
     //储存指向它的整数 ID
     //create GLuint 通过顶点着色器文件和片段着色器文件
     _renderingProgram = Utils::createShaderProgram("/Users/admin/Study/XOpenGL/Example02/Example/vertShader.glsl", "/Users/admin/Study/XOpenGL/Example02/Example/fragShader.glsl");
-    
     cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
     cubeLocX = 0.0f; cubeLocY = -2.0f; cubeLocZ = 0.0f;
-    // 108/3 = 36个顶点
+    // 108/3 = 36个顶点, 6个面，12个三角形，组成了放置在原点处 2X2X2 立方体， 实际只要8个顶点，使用EBO可以优化
     float vertexPositions[108] = {
-        -1.0f,  1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f, 1.0f,  1.0f, -1.0f, -1.0f,  1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f, 1.0f, -1.0f,  1.0f, 1.0f,  1.0f, -1.0f,
-        1.0f, -1.0f,  1.0f, 1.0f,  1.0f,  1.0f, 1.0f,  1.0f, -1.0f,
-        1.0f, -1.0f,  1.0f, -1.0f, -1.0f,  1.0f, 1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f, -1.0f,  1.0f,  1.0f, 1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f, -1.0f, -1.0f, -1.0f, -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,  1.0f, -1.0f,  1.0f,  1.0f, -1.0f, -1.0f,
-        1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f, 1.0f,  1.0f, -1.0f, 1.0f,  1.0f,  1.0f,
-        1.0f,  1.0f,  1.0f, -1.0f,  1.0f,  1.0f, -1.0f,  1.0f, -1.0f
+        -1.0f,  1.0f, -1.0f, 
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f, 
+        1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f,  1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f, -1.0f,  1.0f, 
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f, -1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f, 
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f,  1.0f, -1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f, -1.0f,  1.0f, 
+        1.0f, -1.0f,  1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f, -1.0f,
+        1.0f,  1.0f,  1.0f,
+        1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f,  1.0f,
+        -1.0f,  1.0f, -1.0f
     };
-
     //创建 VAO 对象
     glGenVertexArrays(1, _vao);
     //标记VAO 为活跃状态，关联缓冲区和VAO
@@ -82,7 +104,6 @@ void init(GLFWwindow* window) {
     glGenBuffers(numVBOs, _vbo);
     //把新创建的 VBO 绑定到 GL_ARRAY_BUFFER 目标上，同时也绑定到了 OpenGL 渲染管线上
     glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
-    
     //将顶点数据 (CPU 内存) 拷贝到 VBO（GPU 显存）
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertexPositions), vertexPositions, GL_STATIC_DRAW);
 }
@@ -102,29 +123,36 @@ void display(GLFWwindow* window, double currentTime) {
     
     //返回位置序号
     //参数2： 必须是 an active uniform variable name ， 不能是以保留前缀“gl_”开头
+    //获取shader文件中  MV矩阵和投影矩阵的统一变量
     mvLoc = glGetUniformLocation(_renderingProgram, "mv_matrix");
     projLoc = glGetUniformLocation(_renderingProgram, "proj_matrix");
 
     //GLFW: 直接检索窗口的帧缓冲区的当前大小
     glfwGetFramebufferSize(window, &width, &height);
     aspect = (float)width / (float)height;
-    pMat = glm::perspective(1.0472f, aspect, 0.1f, 1000.0f);
+    //构建透视矩阵
+    // 1.0472f radians = 60 degrees;  弧度 = (π / 180) * 角度
+    // 1.视野角度   2.大平截头体宽高比   3.近视距（设置大了会穿过物体）   4.远视距
+    pMat = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 1000.0f);
 
     //GLM: 创建一个平移矩阵，第一个参数是目标矩阵，第二个参数是平移的方向向量
     vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY, -cameraZ));
     mMat = glm::translate(glm::mat4(1.0f), glm::vec3(cubeLocX, cubeLocY, cubeLocZ));
+    
+    //构建MV矩阵 = 视图矩阵 * 模型矩阵
     mvMat = vMat * mMat;
     //uniform的位置 、需要加载数据的数组元素的数量或者需要修改的矩阵的数量、 是否是行优先矩阵、指向由count个元素的数组的指针
     glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
 
+    //将 VBO 关联给顶点着色器中相应的顶点属性
     glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
     glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
     glEnableVertexAttribArray(0);
 
+    //调整 OpenGL 设置，绘制模型
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
-
     glDrawArrays(GL_TRIANGLES, 0, 36);
 }
 

@@ -55,7 +55,8 @@ void init(GLFWwindow* window) {
     //储存指向它的整数 ID
     //create GLuint 通过顶点着色器文件和片段着色器文件
     _renderingProgram = Utils::createShaderProgram("/Users/admin/Study/XOpenGL/Example02/Example/vertShader.glsl", "/Users/admin/Study/XOpenGL/Example02/Example/fragShader.glsl");
-    cameraX = 0.0f; cameraY = 0.0f; cameraZ = 8.0f;
+    //相机Location
+    cameraX = 0.0f; cameraY = 0.0f; cameraZ = 10.0f;
     cubeLocX = 0.0f; cubeLocY = -2.0f; cubeLocZ = 0.0f;
     // 108/3 = 36个顶点, 6个面，12个三角形，组成了放置在原点处 2X2X2 立方体， 实际只要8个顶点，使用EBO可以优化
     float vertexPositions[108] = {
@@ -113,13 +114,13 @@ void display(GLFWwindow* window, double currentTime) {
     //清除深度缓冲，否则仍使用上一次渲染迭代中的写入的深度值
     glClear(GL_DEPTH_BUFFER_BIT);
     //指定了清除背景时用的颜色值
-    glClearColor(0.0, 0.0, 0.0, 1.0);
+    //glClearColor(0.0, 0.0, 0.0, 1.0);
     //清除全部缓冲区---使用clear Color填充缓冲区
     glClear(GL_COLOR_BUFFER_BIT);
     
     //绑定新的着色器程序
     glUseProgram(_renderingProgram);
-    glPointSize(1.0f);
+    glPointSize(1.f);
     
     //返回位置序号
     //参数2： 必须是 an active uniform variable name ， 不能是以保留前缀“gl_”开头
@@ -127,27 +128,34 @@ void display(GLFWwindow* window, double currentTime) {
     mvLoc = glGetUniformLocation(_renderingProgram, "mv_matrix");
     projLoc = glGetUniformLocation(_renderingProgram, "proj_matrix");
 
+    //构建透视矩阵
     //GLFW: 直接检索窗口的帧缓冲区的当前大小
     glfwGetFramebufferSize(window, &width, &height);
     aspect = (float)width / (float)height;
-    //构建透视矩阵
     // 1.0472f radians = 60 degrees;  弧度 = (π / 180) * 角度
     // 1.视野角度   2.大平截头体宽高比   3.近视距（设置大了会穿过物体）   4.远视距
     pMat = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 1000.0f);
-
-    //GLM: 创建一个平移矩阵，第一个参数是目标矩阵，第二个参数是平移的方向向量
-    vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY, -cameraZ));
-//    mMat = glm::translate(glm::mat4(1.0f), glm::vec3(cubeLocX, cubeLocY, cubeLocZ));
     
+    // 1.构建视图矩阵、模型矩阵 => MV 矩阵
+    // 1.1构建视图矩阵
+    // GLM:创建一个平移矩阵，第一个参数是目标矩阵NXN，第二个参数是平移的方向向量
+    vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY, -cameraZ));
+    // 1.2.1静态模型举证
+    //mMat = glm::translate(glm::mat4(1.0f), glm::vec3(cubeLocX, cubeLocY, cubeLocZ));
+    
+    // 1.2.2动态模型举证
+    // 平移部分：
     tMat = glm::translate(glm::mat4(1.0f), glm::vec3(sin(0.35f*currentTime)*2.0f, cos(0.52f*currentTime)*2.0f, sin(0.7f*currentTime)*2.0f));
+    // 旋转部分
+    // GLM:创建一个旋转矩阵，参数1:要旋转的矩阵  参数2:旋转角度  参数3:旋转轴
     rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
     rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
     rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
     mMat = tMat * rMat;
     
-    //构建MV矩阵 = 视图矩阵 * 模型矩阵
     mvMat = vMat * mMat;
-    //uniform的位置 、需要加载数据的数组元素的数量或者需要修改的矩阵的数量、 是否是行优先矩阵、指向由count个元素的数组的指针
+    //4X4矩阵 绑定到GPU着色器程序的 uniform 变量上
+    //参数1：需要加载数据的数组元素的数量或者需要修改的矩阵的数量 参数2：是否是行优先矩阵 3：参数指向由count个元素的数组的指针
     glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
 
@@ -168,7 +176,7 @@ int main(int argc, const char * argv[]) {
     if (!glfwInit()) {
         exit(EXIT_FAILURE);
     }
-    //指定了计算机必须与 OpenGL版本4.1兼容（Mac）,4.3（windows）
+    //指定了计算机必须与 OpenGL版本4.1兼容（Mac）,4.3（windows 10）
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     //指定OPENGL的配置文件  Mac
@@ -179,7 +187,7 @@ int main(int argc, const char * argv[]) {
     //初始化window
     //创建与其相关的OpenGL上下文、前2个参数指定宽高标题等
     //后2个参数 NULL, 分别用来允许全屏显示和资源共享
-    GLFWwindow * window = glfwCreateWindow(600, 600, "Chapter 4 - program 1", NULL, NULL);
+    GLFWwindow * window = glfwCreateWindow(400, 300, "Chapter 4 - program 1", NULL, NULL);
     //将window 与 当前 OpenGL 上下文关联
     glfwMakeContextCurrent(window);
 
@@ -201,6 +209,8 @@ int main(int argc, const char * argv[]) {
     init(window);
 
     //4.重复渲染
+    //指定了清除背景时用的颜色值
+    glClearColor(0.0, 0.0, 0.0, 1.0);
     while (!glfwWindowShouldClose(window)) {
         display(window, glfwGetTime());
         //绘制屏幕

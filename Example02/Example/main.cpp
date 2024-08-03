@@ -36,6 +36,8 @@ glDrawArrays(GLenum mode, Glint first, GLsizei count);
 float cameraX, cameraY, cameraZ;
 float cubeLocX, cubeLocY, cubeLocZ;
 
+float tf;
+
 #define numVAOs 1
 #define numVBOs 2
 GLuint _renderingProgram;
@@ -52,11 +54,18 @@ glm::mat4 tMat, rMat;
 
 void init(GLFWwindow* window) {
     
+    //GLFW: 直接检索窗口的帧缓冲区的当前大小
+    glfwGetFramebufferSize(window, &width, &height);
+    aspect = (float)width / (float)height;
+    // 1.0472f radians = 60 degrees;  弧度 = (π / 180) * 角度
+    // 1.视野角度   2.大平截头体宽高比   3.近视距（设置大了会穿过物体）   4.远视距
+    pMat = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 1000.0f);
+    
     //储存指向它的整数 ID
     //create GLuint 通过顶点着色器文件和片段着色器文件
     _renderingProgram = Utils::createShaderProgram("/Users/admin/Study/XOpenGL/Example02/Example/vertShader.glsl", "/Users/admin/Study/XOpenGL/Example02/Example/fragShader.glsl");
     //相机Location
-    cameraX = 0.0f; cameraY = 0.0f; cameraZ = 10.0f;
+    cameraX = 0.0f; cameraY = 0.0f; cameraZ = 32.0f;
     cubeLocX = 0.0f; cubeLocY = -2.0f; cubeLocZ = 0.0f;
     // 108/3 = 36个顶点, 6个面，12个三角形，组成了放置在原点处 2X2X2 立方体， 实际只要8个顶点，使用EBO可以优化
     float vertexPositions[108] = {
@@ -129,45 +138,47 @@ void display(GLFWwindow* window, double currentTime) {
     projLoc = glGetUniformLocation(_renderingProgram, "proj_matrix");
 
     //构建透视矩阵
-    //GLFW: 直接检索窗口的帧缓冲区的当前大小
-    glfwGetFramebufferSize(window, &width, &height);
-    aspect = (float)width / (float)height;
-    // 1.0472f radians = 60 degrees;  弧度 = (π / 180) * 角度
-    // 1.视野角度   2.大平截头体宽高比   3.近视距（设置大了会穿过物体）   4.远视距
-    pMat = glm::perspective(glm::radians(45.0f), aspect, 0.1f, 1000.0f);
-    
     // 1.构建视图矩阵、模型矩阵 => MV 矩阵
     // 1.1构建视图矩阵
     // GLM:创建一个平移矩阵，第一个参数是目标矩阵NXN，第二个参数是平移的方向向量
     vMat = glm::translate(glm::mat4(1.0f), glm::vec3(-cameraX, -cameraY, -cameraZ));
-    // 1.2.1静态模型举证
-    //mMat = glm::translate(glm::mat4(1.0f), glm::vec3(cubeLocX, cubeLocY, cubeLocZ));
-    
-    // 1.2.2动态模型举证
-    // 平移部分：
-    tMat = glm::translate(glm::mat4(1.0f), glm::vec3(sin(0.35f*currentTime)*2.0f, cos(0.52f*currentTime)*2.0f, sin(0.7f*currentTime)*2.0f));
-    // 旋转部分
-    // GLM:创建一个旋转矩阵，参数1:要旋转的矩阵  参数2:旋转角度  参数3:旋转轴
-    rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)currentTime, glm::vec3(0.0f, 1.0f, 0.0f));
-    rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(1.0f, 0.0f, 0.0f));
-    rMat = glm::rotate(rMat, 1.75f*(float)currentTime, glm::vec3(0.0f, 0.0f, 1.0f));
-    mMat = tMat * rMat;
-    
-    mvMat = vMat * mMat;
-    //4X4矩阵 绑定到GPU着色器程序的 uniform 变量上
-    //参数1：需要加载数据的数组元素的数量或者需要修改的矩阵的数量 参数2：是否是行优先矩阵 3：参数指向由count个元素的数组的指针
-    glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
+
     glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
+    
+    for (int i = 0; i < 24; i++) {
+        
+        tf = currentTime + i;
+        // 1.2.1静态模型举证
+        //mMat = glm::translate(glm::mat4(1.0f), glm::vec3(cubeLocX, cubeLocY, cubeLocZ));
+        
+        // 1.2.2动态模型举证
+        float n = (24)/3.f;
+        // 平移部分：
+        tMat = glm::translate(glm::mat4(1.0f), glm::vec3(sin(0.35f*tf)*n, cos(0.52f*tf)*n, sin(0.7f*tf)*n));
+        // 旋转部分
+        // GLM:创建一个旋转矩阵，参数1:要旋转的矩阵  参数2:旋转角度  参数3:旋转轴
+        rMat = glm::rotate(glm::mat4(1.0f), 1.75f*(float)tf, glm::vec3(0.0f, 1.0f, 0.0f));
+        rMat = glm::rotate(rMat, 1.75f*(float)tf, glm::vec3(1.0f, 0.0f, 0.0f));
+        rMat = glm::rotate(rMat, 1.75f*(float)tf, glm::vec3(0.0f, 0.0f, 1.0f));
+        mMat = tMat * rMat;
+        
+        mvMat = vMat * mMat;
+        //4X4矩阵 绑定到GPU着色器程序的 uniform 变量上
+        //参数1：需要加载数据的数组元素的数量或者需要修改的矩阵的数量 参数2：是否是行优先矩阵 3：参数指向由count个元素的数组的指针
+        glUniformMatrix4fv(mvLoc, 1, GL_FALSE, glm::value_ptr(mvMat));
+        glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(pMat));
 
-    //将 VBO 关联给顶点着色器中相应的顶点属性
-    glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-    glEnableVertexAttribArray(0);
+        //将 VBO 关联给顶点着色器中相应的顶点属性
+        glBindBuffer(GL_ARRAY_BUFFER, _vbo[0]);
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+        glEnableVertexAttribArray(0);
 
-    //调整 OpenGL 设置，绘制模型
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+        //调整 OpenGL 设置，绘制模型
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LEQUAL);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    }
 }
 
 int main(int argc, const char * argv[]) {
@@ -187,7 +198,7 @@ int main(int argc, const char * argv[]) {
     //初始化window
     //创建与其相关的OpenGL上下文、前2个参数指定宽高标题等
     //后2个参数 NULL, 分别用来允许全屏显示和资源共享
-    GLFWwindow * window = glfwCreateWindow(400, 300, "Chapter 4 - program 1", NULL, NULL);
+    GLFWwindow * window = glfwCreateWindow(800, 800, "Chapter 4 - program 1", NULL, NULL);
     //将window 与 当前 OpenGL 上下文关联
     glfwMakeContextCurrent(window);
 
